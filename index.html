@@ -1,398 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIGAME PRO | Global Hardware Database</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Steam Tarzı Oyun Platformu</title>
     <style>
-        :root {
-            /* Gözü yormayan Soft-Gamer Paleti */
-            --bg-deep: #0f172a; /* Derin gece mavisi */
-            --bg-card: #1e293b; /* Slate mavi */
-            --accent-soft: #38bdf8; /* Yumuşak gökyüzü mavisi */
-            --accent-green: #34d399; /* Mat zümrüt yeşili */
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-subtle: rgba(255, 255, 255, 0.05);
-        }
-
+        /* CSS TASARIM BÖLÜMÜ */
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            background-color: #1b2838; /* Steam koyu arka plan */
+            color: #c7d5ed;
+            font-family: 'Motiva Sans', Sans-serif;
             margin: 0;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.03) 0, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(52, 211, 153, 0.03) 0, transparent 50%);
+            padding: 0;
         }
 
-        .font-gamer { font-family: 'Orbitron', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* --- HARDWARE GATE --- */
-        #hardwareGate {
-            position: fixed; inset: 0; background: #020617; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
+        /* Navigasyon Çubuğu */
+        nav {
+            background-color: #171a21;
+            padding: 20px 10%;
+            display: flex;
+            gap: 20px;
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        .gate-card {
-            background: #1e293b; border: 1px solid var(--border-subtle); padding: 50px;
-            width: 100%; max-width: 600px; border-radius: 8px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        nav a {
+            color: #dcdedf;
+            text-decoration: none;
+            transition: 0.3s;
         }
 
-        /* --- STEAMDB STYLE TABLE --- */
-        .db-container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
-
-        .db-header-row {
-            display: grid; grid-template-columns: 60px 2.5fr 1fr 1fr 120px 140px;
-            padding: 15px 25px; background: rgba(15, 23, 42, 0.8);
-            border-bottom: 2px solid #334155; color: var(--text-muted);
-            font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;
+        nav a:hover {
+            color: #fff;
         }
 
-        .db-row {
-            display: grid; grid-template-columns: 60px 2.5fr 1fr 1fr 120px 140px;
-            padding: 16px 25px; background: transparent;
-            border-bottom: 1px solid var(--border-subtle);
-            align-items: center; transition: all 0.2s ease;
+        /* Ana Konteyner */
+        .container {
+            width: 80%;
+            margin: 20px auto;
         }
 
-        .db-row:hover {
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 3px solid var(--accent-soft);
-            padding-left: 22px;
+        /* Öne Çıkan Alan (Hero) */
+        .featured {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('https://via.placeholder.com/1200x500');
+            background-size: cover;
+            height: 400px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
         }
 
-        .status-badge {
-            font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
-            background: rgba(52, 211, 153, 0.1); color: var(--accent-green);
-            border: 1px solid rgba(52, 211, 153, 0.2);
+        .featured h1 {
+            font-size: 48px;
+            margin: 0;
+            color: #fff;
         }
 
-        /* --- MODAL --- */
-        #mainModal {
-            display: none; position: fixed; inset: 0; z-index: 10000;
-            background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(8px);
+        /* Oyun Kartları Grid Yapısı */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
 
-        .modal-body {
-            max-width: 1100px; margin: 2% auto; background: #1e293b;
-            border: 1px solid #334155; height: 90vh; overflow-y: auto; padding: 60px;
-            border-radius: 12px; position: relative;
+        .game-card {
+            background-color: #16202d;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
 
-        .download-btn {
-            background: #0ea5e9; color: white; font-weight: bold; padding: 16px 40px;
-            border-radius: 6px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px;
+        .game-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
         }
 
-        .download-btn:hover { background: #0284c7; transform: translateY(-2px); }
-
-        select, input {
-            background: #0f172a; border: 1px solid #334155; color: white;
-            padding: 14px; border-radius: 6px; transition: border 0.3s;
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
         }
-        select:focus, input:focus { border-color: var(--accent-soft); outline: none; }
 
-        /* Smooth Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .game-info {
+            padding: 15px;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .price-tag {
+            background-color: #000;
+            display: inline-block;
+            padding: 5px 10px;
+            color: #a3da36; /* Steam indirim yeşili */
+            font-weight: bold;
+        }
+
+        .btn-buy {
+            background: linear-gradient(to right, #75b022, #588a1b);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            cursor: pointer;
+            float: right;
+        }
     </style>
 </head>
 <body>
 
-    <div id="hardwareGate">
-        <div class="gate-card text-center">
-            <h1 class="font-gamer text-2xl text-white mb-2">SYSTEM_AUTH</h1>
-            <p class="text-slate-400 text-xs mb-10 tracking-[3px] uppercase">Identify hardware for accurate FPS data</p>
-            
-            <div class="space-y-6 text-left">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-400 uppercase mb-2 block">GPU Core</label>
-                    <select id="gpuSelect" class="w-full">
-                        <option value="nvidia_high">NVIDIA RTX 40-Series / 3090</option>
-                        <option value="nvidia_mid">NVIDIA RTX 3060 / 2060 / 3050</option>
-                        <option value="nvidia_low">NVIDIA GTX 1650 / 1050 / 960</option>
-                        <option value="amd_high">AMD Radeon RX 7000 / 6000 High-End</option>
-                        <option value="amd_low">AMD RX 580 / 570 / APU Vega</option>
-                        <option value="intel">Intel Arc A-Series / Iris Xe</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[11px] font-bold text-slate-400 uppercase mb-2 block">Processor</label>
-                        <select id="cpuSelect" class="w-full">
-                            <option value="high">High (i7 / i9 / Ryzen 7)</option>
-                            <option value="mid">Mid (i5 / Ryzen 5)</option>
-                            <option value="low">Entry (i3 / Ryzen 3)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[11px] font-bold text-slate-400 uppercase mb-2 block">Memory</label>
-                        <select id="ramSelect" class="w-full">
-                            <option value="32">32GB+</option>
-                            <option value="16">16GB</option>
-                            <option value="8">8GB</option>
-                            <option value="4">4GB</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button onclick="authorizeSystem()" class="w-full py-4 bg-sky-500 text-white font-bold rounded-lg hover:bg-sky-400 transition-all mt-4 uppercase tracking-widest">
-                    Enter Database
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <nav class="p-6 bg-slate-900 border-b border-slate-800 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-6">
-            <span class="text-2xl font-black font-gamer text-white tracking-tighter">OPTIGAME<span class="text-sky-400">PRO</span></span>
-            <div id="hwInfo" class="hidden lg:flex gap-4 text-[10px] font-mono text-slate-500 border-l border-slate-800 pl-6 uppercase">
-                </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="flex bg-slate-800 p-1 rounded-md">
-                <button id="lang-en" onclick="setLang('en')" class="px-3 py-1 text-xs font-bold bg-slate-700 rounded text-white">EN</button>
-                <button id="lang-tr" onclick="setLang('tr')" class="px-3 py-1 text-xs font-bold hover:text-white transition-colors">TR</button>
-            </div>
-            <button onclick="resetSystem()" class="text-[10px] text-slate-500 hover:text-red-400 font-bold uppercase transition-colors">Reset Profile</button>
-        </div>
+    <nav>
+        <a href="#">Mağaza</a>
+        <a href="#">Topluluk</a>
+        <a href="#">Hakkında</a>
+        <a href="#">Destek</a>
     </nav>
 
-    <div class="db-container">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-                <h2 id="ui-title" class="text-4xl font-black text-white mb-2 uppercase">Optimization Library</h2>
-                <p id="ui-subtitle" class="text-slate-400 text-sm italic">Tested and verified performance protocols for global titles.</p>
-            </div>
-            <div class="w-full max-w-md">
-                <input type="text" id="dbSearch" onkeyup="renderList()" placeholder="Filter games..." class="w-full bg-slate-900 border-slate-700">
-            </div>
+    <div class="container">
+        <div class="featured">
+            <h1>Cyberpunk 2077</h1>
+            <p>Geleceğin dünyasına adım atın.</p>
         </div>
 
-        <div class="bg-slate-900/50 rounded-lg border border-slate-800 overflow-hidden shadow-2xl">
-            <div class="db-header-row">
-                <span>Rank</span>
-                <span>Game Title</span>
-                <span>Category</span>
-                <span>Est. FPS</span>
-                <span>Status</span>
-                <span>Protocol</span>
-            </div>
-            <div id="gameTableBody">
+        <h2>Popüler ve Tavsiye Edilenler</h2>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150" alt="Oyun">
+                <div class="game-info">
+                    <span class="game-title">The Witcher 3</span>
+                    <div class="price-tag">249,00 TL</div>
+                    <button class="btn-buy">Ekle</button>
                 </div>
+            </div>
+
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150" alt="Oyun">
+                <div class="game-info">
+                    <span class="game-title">Elden Ring</span>
+                    <div class="price-tag">599,00 TL</div>
+                    <button class="btn-buy">Ekle</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150" alt="Oyun">
+                <div class="game-info">
+                    <span class="game-title">Counter-Strike 2</span>
+                    <div class="price-tag" style="color: #66c0f4;">Ücretsiz</div>
+                    <button class="btn-buy">Oyna</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="mainModal">
-        <div class="modal-body">
-            <button onclick="closeModal()" class="absolute top-8 right-10 text-4xl text-slate-500 hover:text-white">&times;</button>
-            <div id="modalContent"></div>
-        </div>
-    </div>
-
-    <script>
-        let currentLang = 'en';
-        let hwProfile = { gpu: 'nvidia_mid', cpu: 'mid', ram: '16' };
-
-        const uiStrings = {
-            en: { title: "Optimization Library", subtitle: "Tested and verified performance protocols for global titles.", fps: "TARGET FPS", tweaks: "CRITICAL TWEAKS", launch: "LAUNCH OPTIONS", download: "DOWNLOAD CONFIG FILE", status: "VERIFIED" },
-            tr: { title: "Optimizasyon Kütüphanesi", subtitle: "Küresel oyunlar için test edilmiş ve onaylanmış protokoller.", fps: "HEDEF FPS", tweaks: "KRİTİK AYARLAR", launch: "BAŞLATMA KOMUTLARI", download: "CONFIG DOSYASINI İNDİR", status: "ONAYLANDI" }
-        };
-
-        // --- FULL 100+ GAME DATABASE ---
-        const games = [
-            { id: 1, name: "Red Dead Redemption 2", cat: "AAA / Story", baseFPS: 60, en: ["Tree Tessellation: OFF (15% FPS boost)", "Use Vulkan for stability on 8GB/16GB", "Water Physics: Minimum"], tr: ["Tree Tessellation kapatın (%15 FPS artışı)", "8GB/16GB RAM için Vulkan API kullanın", "Su Fiziği: En Düşük"], launch: "-vulkan -ignorepipelinecache", file: "RDR2_Optimized.ini" },
-            { id: 2, name: "Counter-Strike 2", cat: "Competitive", baseFPS: 300, en: ["Nvidia Reflex: On + Boost", "Texture Filtering: Bilinear", "Disable Animated Avatars"], tr: ["Nvidia Reflex: On + Boost", "Texture Filtering: Bilinear", "Hareketli Avatarları kapatın"], launch: "-high -threads 8 +fps_max 0", file: "CS2_Pro_Settings.cfg" },
-            { id: 3, name: "Cyberpunk 2077", cat: "AAA / RPG", baseFPS: 55, en: ["Crowd Density: Low", "SSR Quality: Off", "DLSS/FSR: Balanced"], tr: ["Kalabalık Yoğunluğu: Düşük", "Yansımalar (SSR): Kapalı", "DLSS/FSR: Dengeli"], launch: "-nolauncher -high", file: "CP77_Boost.json" },
-            { id: 4, name: "Silent Hill 2 Remake", cat: "Horror", baseFPS: 50, en: ["TSR Scaling: 60%", "Ray Tracing: Off", "Shadow Quality: Low"], tr: ["TSR Ölçekleme: %60", "Ray Tracing: Kapalı", "Gölge Kalitesi: Düşük"], launch: "-dx11 -notexturestreaming", file: "SH2_Fix.ini" },
-            { id: 5, name: "R.E.P.O.", cat: "Indie / Co-op", baseFPS: 144, en: ["Global Illumination: Off", "Particle Effects: Low", "Force Discrete GPU"], tr: ["Global Aydınlatma: Kapalı", "Parçacık Efekti: Düşük", "Harici GPU zorlayın"], launch: "-force-d3d11", file: "REPO_Performance.txt" },
-            { id: 6, name: "Grand Theft Auto V", cat: "Open World", baseFPS: 100, en: ["Grass Quality: Normal", "MSAA: Off", "Distance Scaling: 40%"], tr: ["Çimen Kalitesi: Normal", "MSAA: Kapalı", "Uzaklık Çizimi: %40"], launch: "-NoLoadingScreen -high", file: "GTA5_LowEnd.xml" },
-            { id: 7, name: "Valorant", cat: "Competitive", baseFPS: 350, en: ["Multithreaded Rendering: ON", "Bloom: OFF", "Raw Input Buffer: ON"], tr: ["Çoklu Çekirdek İşleme: AÇIK", "Bloom: KAPALI", "Raw Input Buffer: AÇIK"], launch: "-high", file: "Valo_Optimized.cfg" },
-            { id: 8, name: "Assetto Corsa", cat: "Simulation", baseFPS: 120, en: ["Use Custom Shaders Patch", "Shadow Cast: Disabled for small objects", "Mirror Res: Low"], tr: ["Custom Shaders Patch kullanın", "Küçük nesneler için gölgeyi kapatın", "Ayna Çözünürlüğü: Düşük"], launch: "-high", file: "AC_Settings.ini" },
-            { id: 9, name: "Rust", cat: "Survival", baseFPS: 75, en: ["Max Gibs: 0", "Shadow Cascades: No Cascades", "Object Quality: 100"], tr: ["Max Gibs: 0", "Gölge Kademesi: Kapalı", "Obje Kalitesi: 100"], launch: "-high -malloc=system", file: "Rust_Fix.cfg" },
-            { id: 10, name: "Rainbow Six Siege", cat: "Tactical", baseFPS: 160, en: ["Vulkan Mode: Enabled", "LOD Quality: Ultra", "Shading Quality: Low"], tr: ["Vulkan Modu: Etkin", "LOD Kalitesi: Ultra", "Gölgelendirme: Düşük"], launch: "-vulkan -high", file: "R6_Optimized.ini" }
-        ];
-
-        // --- DİNAMİK 100+ OYUN ÜRETİMİ (Genişletilmiş Veri) ---
-        const extras = ["Fortnite", "Apex Legends", "Minecraft", "Elden Ring", "Starfield", "Baldur's Gate 3", "Forza Horizon 5", "Dota 2", "LoL", "Warzone 2.0", "Hogwarts Legacy", "Battlefield 2042", "The Witcher 3", "Dead by Daylight", "ETS 2", "ATS", "F1 24", "Mortal Kombat 1", "Tekken 8", "Street Fighter 6", "Lethal Company", "Stray", "Sons of the Forest", "Green Hell", "Sea of Thieves", "No Man's Sky", "Ark: Survival", "Warframe", "Destiny 2", "Overwatch 2", "Rocket League", "Sims 4", "Cities Skylines 2", "Star Citizen", "Bodycam", "Gray Zone Warfare", "Marvel Rivals", "Black Myth: Wukong", "EA FC 25", "PUBG", "Genshin Impact", "Honkai Star Rail", "Palworld", "Mount & Blade II", "Squad", "Hell Let Loose", "Ready or Not", "Arma 3", "BeamNG.drive", "iRacing", "Hitman 3", "Mafia DE", "Detroit: Become Human", "A Way Out", "It Takes Two", "Alan Wake 2", "Control", "Doom Eternal", "Hades II", "Balatro", "Slay the Spire", "Terraria", "Stardew Valley", "Among Us", "Fall Guys", "Portal 2", "Left 4 Dead 2", "Half-Life: Alyx", "Satisfactory", "Factorio", "RimWorld", "Project Zomboid", "Enshrouded", "Manor Lords", "Abiotic Factor", "Bodycam", "Once Human", "First Descendant", "Zenless Zone Zero", "Wuthering Waves", "Dark and Darker", "V Rising", "Deadlock", "Spectre Divide", "The Finals", "Helldivers 2", "Escape from Tarkov", "DayZ", "Project Cars 2", "Squad", "Insurgency Sandstorm", "Huntsman", "Dying Light 2", "Watch Dogs Legion", "Far Cry 6", "Assassin's Creed Valhalla"];
-
-        extras.forEach((name, i) => {
-            games.push({
-                id: 11 + i, name: name, cat: "Global Database", baseFPS: 85 + (i % 15),
-                en: ["Disable V-Sync for lower input lag", "Set Resolution Scale to 90%", "Use Performance Power Plan"],
-                tr: ["Düşük gecikme için V-Sync kapatın", "Çözünürlük Ölçeğini %90 yapın", "Yüksek Performans güç planı kullanın"],
-                launch: "-high -nojoy", file: `${name.replace(/\s+/g, '_')}_Opti.txt`
-            });
-        });
-
-        // --- CORE FUNCTIONS ---
-
-        function authorizeSystem() {
-            hwProfile.gpu = document.getElementById('gpuSelect').value;
-            hwProfile.cpu = document.getElementById('cpuSelect').value;
-            hwProfile.ram = document.getElementById('ramSelect').value;
-            localStorage.setItem('optigame_profile_v5', JSON.stringify(hwProfile));
-            document.getElementById('hardwareGate').style.display = 'none';
-            renderUI();
-        }
-
-        function renderUI() {
-            document.getElementById('hwInfo').innerText = `GPU: ${hwProfile.gpu.replace('_',' ')} | CPU: ${hwProfile.cpu} | RAM: ${hwProfile.ram}GB`;
-            renderList();
-        }
-
-        function renderList() {
-            const filter = document.getElementById('dbSearch').value.toLowerCase();
-            const body = document.getElementById('gameTableBody');
-            body.innerHTML = "";
-
-            games.forEach(game => {
-                if (game.name.toLowerCase().includes(filter)) {
-                    // HW MULTIPLIER
-                    let mult = 1.0;
-                    if(hwProfile.gpu.includes('high')) mult *= 2.2;
-                    if(hwProfile.gpu.includes('low')) mult *= 0.6;
-                    if(hwProfile.ram === '8') mult *= 0.8;
-                    if(hwProfile.ram === '4') mult *= 0.45;
-                    if(hwProfile.cpu === 'low') mult *= 0.75;
-
-                    const finalFPS = Math.round(game.baseFPS * mult);
-
-                    body.innerHTML += `
-                        <div class="db-row">
-                            <span class="font-mono text-[10px] text-slate-500">#${game.id}</span>
-                            <span class="font-bold text-slate-200">${game.name}</span>
-                            <span class="text-[10px] uppercase text-slate-500 font-semibold">${game.cat}</span>
-                            <span class="text-emerald-400 font-bold font-gamer">${finalFPS}+</span>
-                            <span><span class="status-badge">${uiStrings[currentLang].status}</span></span>
-                            <button onclick="openProtocol('${game.name}')" class="text-[10px] font-bold bg-slate-800 border border-slate-700 py-2 rounded hover:bg-sky-500 hover:border-sky-500 hover:text-white transition-all uppercase px-4">
-                                OPEN_FILE
-                            </button>
-                        </div>
-                    `;
-                }
-            });
-        }
-
-        function openProtocol(name) {
-            const game = games.find(g => g.name === name);
-            const content = document.getElementById('modalContent');
-            const s = uiStrings[currentLang];
-
-            const tweaksList = game[currentLang].map(t => `<li class="flex items-center mb-4"><span class="text-sky-400 mr-4 font-bold">●</span> ${t}</li>`).join('');
-
-            content.innerHTML = `
-                <div class="mb-12">
-                    <h1 class="text-5xl font-black text-white uppercase mb-2">${game.name}</h1>
-                    <p class="text-sky-400 font-bold uppercase tracking-widest text-xs">Verified Optimization Protocol v5.0</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-                    <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-2">${s.fps}</p>
-                        <p class="text-4xl font-black text-emerald-400">OPTIMIZED</p>
-                    </div>
-                    <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg text-center">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-2">SYSTEM LOAD</p>
-                        <p class="text-4xl font-black text-white italic">BALANCED</p>
-                    </div>
-                    <div class="p-6 bg-slate-800 border border-slate-700 rounded-lg text-right">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-2">AUTH_STATUS</p>
-                        <p class="text-4xl font-black text-sky-400 tracking-tighter">SECURE</p>
-                    </div>
-                </div>
-
-                <div class="mb-12">
-                    <h3 class="text-xl font-bold text-white mb-6 border-l-4 border-sky-500 pl-4 uppercase">${s.tweaks}</h3>
-                    <ul class="text-lg text-slate-300 space-y-2">${tweaksList}</ul>
-                </div>
-
-                <div class="mb-12">
-                    <h3 class="text-xl font-bold text-slate-400 mb-6 border-l-4 border-slate-600 pl-4 uppercase">${s.launch}</h3>
-                    <div class="bg-slate-900 p-6 font-mono text-sky-300 border border-slate-800 rounded text-sm select-all">
-                        ${game.launch}
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-20">
-                    <button onclick="downloadFile('${game.name}', '${game.launch}')" class="download-btn">
-                        <span>${s.download}</span>
-                    </button>
-                </div>
-            `;
-            document.getElementById('mainModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function downloadFile(game, launch) {
-            const date = new Date().toDateString();
-            const config = `
-[OPTIGAME_PRO_CONFIG]
-Generated: ${date}
-Game: ${game}
-HW_Profile: ${JSON.stringify(hwProfile)}
-
-[VIDEO_SETTINGS]
-r.ResolutionScale=85
-r.ViewDistanceQuality=1
-r.ShadowQuality=0
-r.PostProcessQuality=0
-r.TextureQuality=1
-r.EffectsQuality=0
-r.FoliageQuality=0
-
-[LAUNCH_COMMAND]
-${launch}
-
-[INSTRUCTIONS]
-1. Copy Launch Commands to Steam/Epic Launch Options.
-2. Replace your GameUserSettings.ini with these settings.
-3. Enjoy stabilized FPS.`;
-
-            const blob = new Blob([config], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Opti_${game.replace(/\s+/g, '_')}.txt`;
-            a.click();
-        }
-
-        function closeModal() {
-            document.getElementById('mainModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 text-xs font-bold bg-slate-700 rounded text-white' : 'px-3 py-1 text-xs font-bold hover:text-white transition-colors';
-            document.getElementById('lang-tr').className = lang === 'tr' ? 'px-3 py-1 text-xs font-bold bg-slate-700 rounded text-white' : 'px-3 py-1 text-xs font-bold hover:text-white transition-colors';
-            
-            document.getElementById('ui-title').innerText = uiStrings[lang].title;
-            document.getElementById('ui-subtitle').innerText = uiStrings[lang].subtitle;
-            renderList();
-        }
-
-        function resetSystem() {
-            localStorage.removeItem('optigame_profile_v5');
-            location.reload();
-        }
-
-        // AUTO START
-        const saved = localStorage.getItem('optigame_profile_v5');
-        if (saved) {
-            hwProfile = JSON.parse(saved);
-            document.getElementById('hardwareGate').style.display = 'none';
-            renderUI();
-        }
-    </script>
 </body>
 </html>
