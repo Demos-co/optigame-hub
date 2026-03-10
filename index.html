@@ -3,69 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OptiGame | Performance Hub</title>
+    <title>OPTIGAME ULTIMATE | Pro Performance Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: sans-serif; }
-        .game-card { background: #1e293b; border: 1px solid #334155; transition: all 0.3s ease; }
-        .game-card:hover { border-color: #3b82f6; transform: translateY(-5px); }
-        
-        /* Popup (Modal) Tasarımı */
-        #guideModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 50; }
-        .modal-content { background: #0f172a; border: 1px solid #3b82f6; max-width: 500px; margin: 10% auto; padding: 2rem; border-radius: 20px; position: relative; }
+        :root {
+            --neon-purple: #bc13fe;
+            --neon-cyan: #0ff;
+            --neon-green: #39ff14;
+            --dark-bg: #050505;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-gamer {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Arkaplan Animasyonu */
+        .bg-animate {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+            z-index: -1;
+        }
+
+        .glow-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        /* Kart Tasarımı */
+        .game-card {
+            background: linear-gradient(145deg, #111, #1a1a1a);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--neon-purple), transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover::before { opacity: 0.3; }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal / Popup Animasyonu */
+        #guideModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-inner {
+            background: #0d0d0d;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.3);
+            max-width: 800px;
+            margin: 5% auto;
+            padding: 3rem;
+            border-radius: 5px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
+
+        .neon-text-purple { text-shadow: 0 0 10px var(--neon-purple); color: var(--neon-purple); }
+        .neon-text-cyan { text-shadow: 0 0 10px var(--neon-cyan); color: var(--neon-cyan); }
+        .neon-text-green { text-shadow: 0 0 10px var(--neon-green); color: var(--neon-green); }
+
+        .search-bar {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #222;
+            transition: all 0.3s;
+        }
+        .search-bar:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            outline: none;
+        }
     </style>
 </head>
-<body class="p-8">
+<body>
 
-    <header class="text-center py-12">
-        <h1 class="text-5xl font-black text-blue-500 mb-4 uppercase tracking-tighter">OptiGame Hub</h1>
-        <p class="text-slate-400 text-lg mb-8">Click 'Read Guide' to see FPS optimization for each game.</p>
-        <input type="text" id="searchInput" onkeyup="filterGames()" placeholder="Search game..." 
-               class="p-3 w-full max-w-md bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500">
+    <div class="bg-animate"></div>
+    <div class="glow-overlay"></div>
+
+    <header class="container mx-auto px-4 py-20 text-center relative">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] -z-10"></div>
+        <h1 class="text-7xl font-black mb-4 neon-text-cyan tracking-[10px]">OPTIGAME</h1>
+        <p class="text-xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">
+            ULTIMATE GLOBAL DATABASE FOR <span class="text-white font-bold">POTATO PC</span> PERFORMANCE BOOSTING.
+        </p>
+        
+        <div class="max-w-2xl mx-auto relative group">
+            <input type="text" id="searchInput" onkeyup="filterGames()" 
+                   placeholder="SEARCH DATABASE FOR OPTIMIZATION..." 
+                   class="search-bar w-full p-6 rounded-none text-xl font-gamer text-white uppercase">
+            <div class="absolute bottom-0 left-0 h-1 bg-cyan-500 w-0 group-hover:w-full transition-all duration-500"></div>
+        </div>
     </header>
 
-    <div id="gameGrid" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <main class="container mx-auto px-4 pb-40">
+        <div id="gameGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            </div>
+    </main>
 
     <div id="guideModal">
-        <div class="modal-content text-center">
-            <h2 id="modalTitle" class="text-3xl font-bold text-blue-400 mb-4"></h2>
-            <div id="modalBody" class="text-slate-300 text-left space-y-4 mb-6">
-                </div>
-            <button onclick="closeGuide()" class="bg-red-500 hover:bg-red-600 px-6 py-2 rounded-lg font-bold">Close</button>
+        <div class="modal-inner">
+            <button onclick="closeGuide()" class="absolute top-5 right-5 text-4xl text-slate-500 hover:text-white">&times;</button>
+            <div id="modalContent"></div>
         </div>
     </div>
 
     <script>
-        const games = ["Dead by Daylight", "Life is Strange 2", "Mortal Kombat 1", "SILENT HILL 2", "Dying Light: The Beast", "Assassin's Creed IV Black Flag", "Mafia: Definitive Edition", "Red Dead Redemption 2", "Detroit: Become Human", "DEVOUR", "Battlefield 6", "Dying Light", "Battlefield 1", "BeamNG.drive", "Arma 3", "Car Mechanic Simulator 2021", "Assetto Corsa", "Counter-Strike 2", "The Last of Us Part II Remastered", "A Way Out", "Age of History II", "Assassin's Creed Shadows", "Assetto Corsa Competizione", "Black Desert", "Electrician Simulator", "Euro Truck Simulator 2", "Far Cry 6", "Grand Theft Auto V Enhanced", "Green Hell", "Hitman: Absolution", "iRacing", "It Takes Two", "Left 4 Dead 2", "Life is Strange", "Mount & Blade", "Mount & Blade: Warband", "Muck", "My Summer Car", "My Winter Car", "PAYDAY 2", "PEAK", "Portal 2", "R.E.P.O.", "Rust", "Shadow of the Tomb Raider", "Silent Hill: Homecoming", "Sons of the Forest", "Stray", "The Crew Motorfest", "The Forest", "The Walking Dead", "The Witcher 3: Wild Hunt", "theHunter: Call of the Wild", "Rainbow Six Siege", "Watch Dogs: Legion", "WRC 10"];
+        // DEV OYUN DATASI - Her oyun için özel ayarlar
+        const gameData = {
+            "Dead by Daylight": {
+                target: "60-90 FPS",
+                tweaks: [
+                    "Modify 'GameUserSettings.ini' and set bUseVSync=False.",
+                    "Set ResolutionQuality to 70% for massive FPS boost.",
+                    "Disable Anti-Aliasing in the config for sharper visibility."
+                ],
+                color: "neon-text-purple"
+            },
+            "Red Dead Redemption 2": {
+                target: "45-60 FPS",
+                tweaks: [
+                    "Switch from Vulkan to DX12 if you have stuttering.",
+                    "Set Water Physics to minimum (This saves 15% performance).",
+                    "Use FSR 2.0 or DLSS set to 'Balanced' mode.",
+                    "Set Lighting Quality to Medium; Ultra lighting kills FPS."
+                ],
+                color: "neon-text-cyan"
+            },
+            "SILENT HILL 2": {
+                target: "30-60 FPS",
+                tweaks: [
+                    "Enable TSR (Temporal Super Resolution) at 60% scale.",
+                    "Set Shadows to Low; global illumination is heavy in this engine.",
+                    "Disable Ray Tracing completely for 2x performance increase.",
+                    "Modify Engine.ini to limit poolsize for 8GB RAM systems."
+                ],
+                color: "neon-text-green"
+            },
+            "Grand Theft Auto V Enhanced": {
+                target: "80-120 FPS",
+                tweaks: [
+                    "Disable MSAA and use FXAA instead.",
+                    "Set Distance Scaling to 30% to reduce CPU load.",
+                    "Grass Quality: Normal (High grass kills performance in forests).",
+                    "Population Density: Low (Crucial for low-end CPUs)."
+                ],
+                color: "neon-text-purple"
+            },
+            "Counter-Strike 2": {
+                target: "144+ FPS",
+                tweaks: [
+                    "Nvidia Reflex: On + Boost.",
+                    "Model Detail: Low, Texture Filtering: Bilinear.",
+                    "Ambient Occlusion: Disabled for better visibility.",
+                    "Disable Animated Avatars in the menu settings."
+                ],
+                color: "neon-text-cyan"
+            },
+            "The Last of Us Part II Remastered": {
+                target: "30-50 FPS",
+                tweaks: [
+                    "VRAM is the limit: Set Texture Quality to Low if < 6GB VRAM.",
+                    "Enable FSR 3 Frame Generation if your GPU supports it.",
+                    "Set Screen Space Reflections to Low."
+                ],
+                color: "neon-text-green"
+            },
+            "R.E.P.O.": {
+                target: "120 FPS",
+                tweaks: [
+                    "Low-poly optimization: Set Particle Effects to Low.",
+                    "Disable Post-Processing to remove blur.",
+                    "Ensure you are using Discrete GPU, not Integrated."
+                ],
+                color: "neon-text-purple"
+            },
+            "Assetto Corsa": {
+                target: "90 FPS",
+                tweaks: [
+                    "Install Content Manager and use Custom Shaders Patch.",
+                    "Disable Shadow Cast for non-essential objects.",
+                    "Limit Mirror Quality to Low; it drains 10% FPS."
+                ],
+                color: "neon-text-cyan"
+            },
+            "Euro Truck Simulator 2": {
+                target: "60 FPS",
+                tweaks: [
+                    "Scaling: 100% (Do not go higher on low-end).",
+                    "Mirror Resolution: Low.",
+                    "Grass & Vegetation: Low for 20% FPS gain."
+                ],
+                color: "neon-text-green"
+            },
+            "Stray": {
+                target: "60 FPS",
+                tweaks: [
+                    "Shadow Quality: Medium.",
+                    "Effects Quality: Medium.",
+                    "Limit FPS to 60 to prevent thermal throttling on laptops."
+                ],
+                color: "neon-text-purple"
+            },
+            "Rainbow Six Siege": {
+                target: "144 FPS",
+                tweaks: [
+                    "Use Vulkan Launch Option for better performance.",
+                    "LOD Quality: Ultra (important for gameplay), but Shadows: Low.",
+                    "Render Scaling: 50 with T-AA Sharpness 100."
+                ],
+                color: "neon-text-cyan"
+            },
+            "Rust": {
+                target: "50-70 FPS",
+                tweaks: [
+                    "Object Quality: 100 (Do not go lower or you won't see bases).",
+                    "Shadow Cascades: No Cascades.",
+                    "Max Gibs: 0 (Essential for FPS)."
+                ],
+                color: "neon-text-green"
+            }
+        };
+
+        // Resimlerden gelen tüm oyunları ekleyelim (Data olmayanlar için default mesaj basar)
+        const allGames = ["Dead by Daylight", "Life is Strange 2", "Mortal Kombat 1", "SILENT HILL 2", "Dying Light: The Beast", "Assassin's Creed IV Black Flag", "Mafia: Definitive Edition", "Red Dead Redemption 2", "Detroit: Become Human", "DEVOUR", "Battlefield 6", "Dying Light", "Battlefield 1", "BeamNG.drive", "Arma 3", "Car Mechanic Simulator 2021", "Assetto Corsa", "Counter-Strike 2", "The Last of Us Part II Remastered", "A Way Out", "Age of History II", "Assassin's Creed Shadows", "Assetto Corsa Competizione", "Black Desert", "Electrician Simulator", "Euro Truck Simulator 2", "Far Cry 6", "Grand Theft Auto V Enhanced", "Green Hell", "Hitman: Absolution", "iRacing", "It Takes Two", "Left 4 Dead 2", "Life is Strange", "Mount & Blade", "Mount & Blade: Warband", "Muck", "My Summer Car", "My Winter Car", "PAYDAY 2", "PEAK", "Portal 2", "R.E.P.O.", "Rust", "Shadow of the Tomb Raider", "Silent Hill: Homecoming", "Sons of the Forest", "Stray", "The Crew Motorfest", "The Forest", "The Walking Dead", "The Witcher 3: Wild Hunt", "theHunter: Call of the Wild", "Rainbow Six Siege", "Watch Dogs: Legion", "WRC 10"];
 
         const grid = document.getElementById('gameGrid');
 
         function renderGames(filter = "") {
             grid.innerHTML = "";
-            games.forEach(game => {
-                if(game.toLowerCase().includes(filter.toLowerCase())) {
+            allGames.forEach(game => {
+                if (game.toLowerCase().includes(filter.toLowerCase())) {
+                    const info = gameData[game] || { target: "Optimizing...", tweaks: ["Coming soon: Detailed FPS steps."], color: "text-slate-500" };
+                    
                     grid.innerHTML += `
-                        <div class="game-card p-6 rounded-2xl flex flex-col justify-between">
-                            <h2 class="text-lg font-bold mb-4 text-white">${game}</h2>
-                            <button onclick="openGuide('${game}')" class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold text-sm transition-colors">Read Guide</button>
+                        <div class="game-card p-8 group" onclick="openGuide('${game}')">
+                            <div class="flex flex-col h-full justify-between">
+                                <div>
+                                    <h2 class="text-xl font-black mb-4 group-hover:neon-text-cyan transition-all">${game}</h2>
+                                    <div class="h-1 w-10 bg-purple-600 mb-6 group-hover:w-full transition-all"></div>
+                                    <p class="text-xs uppercase font-gamer tracking-widest text-slate-500">TARGET FPS</p>
+                                    <p class="text-2xl font-bold ${info.color} mb-6">${info.target}</p>
+                                </div>
+                                <button class="w-full py-4 border border-white/10 group-hover:bg-white group-hover:text-black transition-all font-gamer font-bold">
+                                    GET CONFIG
+                                </button>
+                            </div>
                         </div>
                     `;
                 }
             });
         }
 
-        function openGuide(gameName) {
-            document.getElementById('modalTitle').innerText = gameName;
-            document.getElementById('modalBody').innerHTML = `
-                <p><strong>🔥 Target FPS:</strong> 60 FPS</p>
-                <p><strong>🛠️ Key Tweaks:</strong> Set Texture to Medium, Disable Motion Blur, and use our custom Config.ini file for ${gameName}.</p>
-                <p class="text-xs text-slate-500 font-mono italic">Note: Guide content is being updated...</p>
+        function openGuide(game) {
+            const info = gameData[game] || { target: "N/A", tweaks: ["Data for this game is being uploaded. Check back later!"], color: "text-white" };
+            const modal = document.getElementById('guideModal');
+            const content = document.getElementById('modalContent');
+            
+            let tweaksHTML = info.tweaks.map(t => `<li class="flex items-start mb-4"><span class="text-cyan-400 mr-3">►</span> ${t}</li>`).join('');
+
+            content.innerHTML = `
+                <h2 class="text-4xl font-black neon-text-purple mb-2 font-gamer">${game}</h2>
+                <p class="text-slate-400 mb-8 uppercase tracking-widest border-b border-white/10 pb-4">Performance Report - V2.6</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="p-6 bg-white/5 border-l-4 border-cyan-500">
+                        <p class="text-xs text-slate-500 font-gamer">POTENTIAL FPS</p>
+                        <p class="text-4xl font-black text-white">${info.target}</p>
+                    </div>
+                    <div class="p-6 bg-white/5 border-l-4 border-purple-500">
+                        <p class="text-xs text-slate-500 font-gamer">OPTIMIZATION LEVEL</p>
+                        <p class="text-4xl font-black text-white italic text-shadow">EXTREME</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-gamer text-white mb-6 underline decoration-cyan-500">CRITICAL TWEAKS:</h3>
+                <ul class="text-lg text-slate-300 font-light leading-relaxed mb-8">
+                    ${tweaksHTML}
+                </ul>
+
+                <div class="p-4 bg-red-900/20 border border-red-500/30 text-red-200 text-sm">
+                    <strong>DISCLAIMER:</strong> These settings modify system/game files. Back up your 'Saved' folder before applying.
+                </div>
             `;
-            document.getElementById('guideModal').style.display = "block";
+            
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
         }
 
         function closeGuide() {
             document.getElementById('guideModal').style.display = "none";
+            document.body.style.overflow = "auto";
         }
 
         function filterGames() {
