@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiGame | All Games Performance Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; color: #f8fafc; font-family: sans-serif; }
+        .game-card { 
+            background: #1e293b; 
+            border: 1px solid #334155; 
+            transition: all 0.3s ease; 
+        }
+        .game-card:hover { border-color: #3b82f6; transform: translateY(-5px); }
+    </style>
+</head>
+<body class="p-8">
 
+    <header class="text-center py-12">
+        <h1 class="text-5xl font-black text-blue-500 mb-4">ALL GAMES</h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+            Browse our complete library of performance guides. From AAA masterpieces to indie gems, 
+            we optimize them all for your potato PC.
+        </p>
+    </header>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="game-card p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-2 text-white">Red Dead Redemption 2</h2>
+            <p class="text-slate-400 text-sm mb-4 italic">Description: Best settings for low VRAM cards to maintain 30-60 FPS.</p>
+            <button class="w-full py-2 bg-blue-600 rounded-lg font-bold">Read Guide</button>
+        </div>
+
+        <div class="game-card p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-2 text-white">Silent Hill 2</h2>
+            <p class="text-slate-400 text-sm mb-4 italic">Description: Stuttering fix and engine tweaks for smoother experience.</p>
+            <button class="w-full py-2 bg-blue-600 rounded-lg font-bold">Read Guide</button>
+        </div>
+
+        <div class="game-card p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-2 text-white">GTA V</h2>
+            <p class="text-slate-400 text-sm mb-4 italic">Description: Ultra-low graphics mod for PCs without a dedicated GPU.</p>
+            <button class="w-full py-2 bg-blue-600 rounded-lg font-bold">Read Guide</button>
+        </div>
+    </div>
+
+</body>
+</html>
